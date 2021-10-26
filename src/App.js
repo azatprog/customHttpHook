@@ -9,21 +9,19 @@ export const API_URL = 'https://react-http-69bef-default-rtdb.firebaseio.com/tas
 function App() {
     const [tasks, setTasks] = useState([]);
 
-    const transformTasks = tasksObject => {
-        const loadedTasks = [];
-
-        for (const taskKey in tasksObject) {
-            loadedTasks.push({ id: taskKey, text: tasksObject[taskKey].text });
-        }
-
-        setTasks(loadedTasks);
-    };
-
-    const { isLoading, error, sendRequest: fetchTasks } = useHttp({url: API_URL}, transformTasks);
+    const { isLoading, error, sendRequest: fetchTasks } = useHttp();
 
     useEffect(() => {
-        fetchTasks();
-    }, []);
+        const transformTasks = tasksObject => {
+            const loadedTasks = [];
+            for (const taskKey in tasksObject) {
+                loadedTasks.push({ id: taskKey, text: tasksObject[taskKey].text });
+            }
+            setTasks(loadedTasks);
+        };
+
+        fetchTasks({url: API_URL}, transformTasks);
+    }, [fetchTasks]);
 
     const taskAddHandler = (task) => {
         setTasks((prevTasks) => prevTasks.concat(task));
